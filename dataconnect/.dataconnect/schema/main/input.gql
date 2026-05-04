@@ -1,0 +1,995 @@
+"""
+✨ `Account_KeyOutput` returns the primary key fields of table type `Account`.
+
+It has the same format as `Account_Key`, but is only used as mutation return value.
+"""
+scalar Account_KeyOutput
+"""
+✨ `Device_KeyOutput` returns the primary key fields of table type `Device`.
+
+It has the same format as `Device_Key`, but is only used as mutation return value.
+"""
+scalar Device_KeyOutput
+"""
+✨ `KolamReading_KeyOutput` returns the primary key fields of table type `KolamReading`.
+
+It has the same format as `KolamReading_Key`, but is only used as mutation return value.
+"""
+scalar KolamReading_KeyOutput
+"""
+✨ Generated data input type for table 'Account'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Account_Data {
+  """
+  ✨ Generated from Field `Account`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Account`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Account`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Account`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Account`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Account`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Account`.`lastLoginAt` of type `Timestamp`
+  """
+  lastLoginAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `lastLoginAt` (✨ Generated from Field `Account`.`lastLoginAt` of type `Timestamp`)
+  """
+  lastLoginAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `lastLoginAt` (✨ Generated from Field `Account`.`lastLoginAt` of type `Timestamp`)
+  """
+  lastLoginAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `lastLoginAt` (✨ Generated from Field `Account`.`lastLoginAt` of type `Timestamp`)
+  """
+  lastLoginAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Account`.`passwordHash` of type `String!`
+  """
+  passwordHash: String
+  """
+  ✨ `_expr` server value variant of `passwordHash` (✨ Generated from Field `Account`.`passwordHash` of type `String!`)
+  """
+  passwordHash_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Account`.`role` of type `String!`
+  """
+  role: String
+  """
+  ✨ `_expr` server value variant of `role` (✨ Generated from Field `Account`.`role` of type `String!`)
+  """
+  role_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Account`.`username` of type `String!`
+  """
+  username: String
+  """
+  ✨ `_expr` server value variant of `username` (✨ Generated from Field `Account`.`username` of type `String!`)
+  """
+  username_expr: String_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated filter input type for table 'Account'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Account_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Account_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Account_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Account_Filter!]
+  """
+  ✨ Generated from Field `Account`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Account`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Account`.`lastLoginAt` of type `Timestamp`
+  """
+  lastLoginAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Account`.`passwordHash` of type `String!`
+  """
+  passwordHash: String_Filter
+  """
+  ✨ Generated from Field `Account`.`role` of type `String!`
+  """
+  role: String_Filter
+  """
+  ✨ Generated from Field `Account`.`username` of type `String!`
+  """
+  username: String_Filter
+  """
+  ✨ Generated from Field `Account`.`devices_on_owner` of type `[Device!]!`
+  """
+  devices_on_owner: Device_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Account'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Account_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Account_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Account_Filter
+}
+"""
+✨ Generated having input type for table 'Account'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Account_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Account_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Account_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Account_Having!]
+  """
+  ✨ Generated from Field `Account`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Account`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Account`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Account`.`lastLoginAt_count` of type `Int!`
+  """
+  lastLoginAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Account`.`passwordHash_count` of type `Int!`
+  """
+  passwordHash_count: Int_Filter
+  """
+  ✨ Generated from Field `Account`.`role_count` of type `Int!`
+  """
+  role_count: Int_Filter
+  """
+  ✨ Generated from Field `Account`.`username_count` of type `Int!`
+  """
+  username_count: Int_Filter
+  """
+  ✨ Generated from Field `Account`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Account`.`lastLoginAt_min` of type `Timestamp`
+  """
+  lastLoginAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Account`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Account`.`lastLoginAt_max` of type `Timestamp`
+  """
+  lastLoginAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Account'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Account_Key {
+  """
+  ✨ Generated from Field `Account`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Account`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'Account'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Account_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Account_Filter
+}
+"""
+✨ Generated order input type for table 'Account'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Account_Order {
+  """
+  ✨ Generated from Field `Account`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`lastLoginAt` of type `Timestamp`
+  """
+  lastLoginAt: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`passwordHash` of type `String!`
+  """
+  passwordHash: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`role` of type `String!`
+  """
+  role: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`username` of type `String!`
+  """
+  username: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`lastLoginAt_count` of type `Int!`
+  """
+  lastLoginAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`passwordHash_count` of type `Int!`
+  """
+  passwordHash_count: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`role_count` of type `Int!`
+  """
+  role_count: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`username_count` of type `Int!`
+  """
+  username_count: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`lastLoginAt_min` of type `Timestamp`
+  """
+  lastLoginAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Account`.`lastLoginAt_max` of type `Timestamp`
+  """
+  lastLoginAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Device'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Device_Data {
+  """
+  ✨ Generated from Field `Device`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Device`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Device`.`ownerId` of type `UUID!`
+  """
+  ownerId: UUID
+  """
+  ✨ `_expr` server value variant of `ownerId` (✨ Generated from Field `Device`.`ownerId` of type `UUID!`)
+  """
+  ownerId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Device`.`owner` of type `Account!`
+  """
+  owner: Account_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Device`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Device`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Device`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Device`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Device`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Device`.`description` of type `String`)
+  """
+  description_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Device`.`deviceId` of type `String!`
+  """
+  deviceId: String
+  """
+  ✨ `_expr` server value variant of `deviceId` (✨ Generated from Field `Device`.`deviceId` of type `String!`)
+  """
+  deviceId_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Device`.`location` of type `String`
+  """
+  location: String
+  """
+  ✨ `_expr` server value variant of `location` (✨ Generated from Field `Device`.`location` of type `String`)
+  """
+  location_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Device`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Device`.`name` of type `String!`)
+  """
+  name_expr: String_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated filter input type for table 'Device'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Device_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Device_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Device_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Device_Filter!]
+  """
+  ✨ Generated from Field `Device`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Device`.`ownerId` of type `UUID!`
+  """
+  ownerId: UUID_Filter
+  """
+  ✨ Generated from Field `Device`.`owner` of type `Account!`
+  """
+  owner: Account_Filter
+  """
+  ✨ Generated from Field `Device`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Device`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `Device`.`deviceId` of type `String!`
+  """
+  deviceId: String_Filter
+  """
+  ✨ Generated from Field `Device`.`location` of type `String`
+  """
+  location: String_Filter
+  """
+  ✨ Generated from Field `Device`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Device`.`kolamReadings_on_device` of type `[KolamReading!]!`
+  """
+  kolamReadings_on_device: KolamReading_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Device'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Device_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Device_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Device_Filter
+}
+"""
+✨ Generated having input type for table 'Device'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Device_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Device_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Device_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Device_Having!]
+  """
+  ✨ Generated from Field `Device`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Device`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Device`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `Device`.`deviceId_count` of type `Int!`
+  """
+  deviceId_count: Int_Filter
+  """
+  ✨ Generated from Field `Device`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Device`.`location_count` of type `Int!`
+  """
+  location_count: Int_Filter
+  """
+  ✨ Generated from Field `Device`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Device`.`ownerId_count` of type `Int!`
+  """
+  ownerId_count: Int_Filter
+  """
+  ✨ Generated from Field `Device`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Device`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Device'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Device_Key {
+  """
+  ✨ Generated from Field `Device`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Device`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'Device'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Device_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Device_Filter
+}
+"""
+✨ Generated order input type for table 'Device'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Device_Order {
+  """
+  ✨ Generated from Field `Device`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`ownerId` of type `UUID!`
+  """
+  ownerId: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`owner` of type `Account!`
+  """
+  owner: Account_Order
+  """
+  ✨ Generated from Field `Device`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`deviceId` of type `String!`
+  """
+  deviceId: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`location` of type `String`
+  """
+  location: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`deviceId_count` of type `Int!`
+  """
+  deviceId_count: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`location_count` of type `Int!`
+  """
+  location_count: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`ownerId_count` of type `Int!`
+  """
+  ownerId_count: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Device`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'KolamReading'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input KolamReading_Data {
+  """
+  ✨ Generated from Field `KolamReading`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `KolamReading`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `KolamReading`.`deviceId` of type `UUID!`
+  """
+  deviceId: UUID
+  """
+  ✨ `_expr` server value variant of `deviceId` (✨ Generated from Field `KolamReading`.`deviceId` of type `UUID!`)
+  """
+  deviceId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `KolamReading`.`device` of type `Device!`
+  """
+  device: Device_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `KolamReading`.`ph` of type `Float!`
+  """
+  ph: Float
+  """
+  ✨ `_expr` server value variant of `ph` (✨ Generated from Field `KolamReading`.`ph` of type `Float!`)
+  """
+  ph_expr: Float_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `ph` (✨ Generated from Field `KolamReading`.`ph` of type `Float!`)
+  """
+  ph_update: [Float_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `KolamReading`.`temperature` of type `Float!`
+  """
+  temperature: Float
+  """
+  ✨ `_expr` server value variant of `temperature` (✨ Generated from Field `KolamReading`.`temperature` of type `Float!`)
+  """
+  temperature_expr: Float_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `temperature` (✨ Generated from Field `KolamReading`.`temperature` of type `Float!`)
+  """
+  temperature_update: [Float_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `KolamReading`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: Timestamp
+  """
+  ✨ `_expr` server value variant of `timestamp` (✨ Generated from Field `KolamReading`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `timestamp` (✨ Generated from Field `KolamReading`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `timestamp` (✨ Generated from Field `KolamReading`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight` of type `Float!`
+  """
+  waterHeight: Float
+  """
+  ✨ `_expr` server value variant of `waterHeight` (✨ Generated from Field `KolamReading`.`waterHeight` of type `Float!`)
+  """
+  waterHeight_expr: Float_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `waterHeight` (✨ Generated from Field `KolamReading`.`waterHeight` of type `Float!`)
+  """
+  waterHeight_update: [Float_Update!] @fdc_forbiddenInVariables
+}
+"""
+✨ Generated filter input type for table 'KolamReading'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input KolamReading_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [KolamReading_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: KolamReading_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [KolamReading_Filter!]
+  """
+  ✨ Generated from Field `KolamReading`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`deviceId` of type `UUID!`
+  """
+  deviceId: UUID_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`device` of type `Device!`
+  """
+  device: Device_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`ph` of type `Float!`
+  """
+  ph: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`temperature` of type `Float!`
+  """
+  temperature: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: Timestamp_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight` of type `Float!`
+  """
+  waterHeight: Float_Filter
+}
+"""
+✨ Generated first-row input type for table 'KolamReading'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input KolamReading_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [KolamReading_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: KolamReading_Filter
+}
+"""
+✨ Generated having input type for table 'KolamReading'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input KolamReading_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [KolamReading_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: KolamReading_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [KolamReading_Having!]
+  """
+  ✨ Generated from Field `KolamReading`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`deviceId_count` of type `Int!`
+  """
+  deviceId_count: Int_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`ph_count` of type `Int!`
+  """
+  ph_count: Int_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_count` of type `Int!`
+  """
+  temperature_count: Int_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`timestamp_count` of type `Int!`
+  """
+  timestamp_count: Int_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_count` of type `Int!`
+  """
+  waterHeight_count: Int_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`ph_sum` of type `Float`
+  """
+  ph_sum: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_sum` of type `Float`
+  """
+  temperature_sum: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_sum` of type `Float`
+  """
+  waterHeight_sum: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`ph_avg` of type `Float`
+  """
+  ph_avg: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_avg` of type `Float`
+  """
+  temperature_avg: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_avg` of type `Float`
+  """
+  waterHeight_avg: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`ph_min` of type `Float`
+  """
+  ph_min: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_min` of type `Float`
+  """
+  temperature_min: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`timestamp_min` of type `Timestamp`
+  """
+  timestamp_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_min` of type `Float`
+  """
+  waterHeight_min: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`ph_max` of type `Float`
+  """
+  ph_max: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_max` of type `Float`
+  """
+  temperature_max: Float_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`timestamp_max` of type `Timestamp`
+  """
+  timestamp_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_max` of type `Float`
+  """
+  waterHeight_max: Float_Filter
+}
+"""
+✨ Generated key input type for table 'KolamReading'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input KolamReading_Key {
+  """
+  ✨ Generated from Field `KolamReading`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `KolamReading`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'KolamReading'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input KolamReading_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: KolamReading_Filter
+}
+"""
+✨ Generated order input type for table 'KolamReading'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input KolamReading_Order {
+  """
+  ✨ Generated from Field `KolamReading`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`deviceId` of type `UUID!`
+  """
+  deviceId: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`device` of type `Device!`
+  """
+  device: Device_Order
+  """
+  ✨ Generated from Field `KolamReading`.`ph` of type `Float!`
+  """
+  ph: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`temperature` of type `Float!`
+  """
+  temperature: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight` of type `Float!`
+  """
+  waterHeight: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`deviceId_count` of type `Int!`
+  """
+  deviceId_count: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`ph_count` of type `Int!`
+  """
+  ph_count: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_count` of type `Int!`
+  """
+  temperature_count: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`timestamp_count` of type `Int!`
+  """
+  timestamp_count: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_count` of type `Int!`
+  """
+  waterHeight_count: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`ph_sum` of type `Float`
+  """
+  ph_sum: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_sum` of type `Float`
+  """
+  temperature_sum: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_sum` of type `Float`
+  """
+  waterHeight_sum: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`ph_avg` of type `Float`
+  """
+  ph_avg: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_avg` of type `Float`
+  """
+  temperature_avg: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_avg` of type `Float`
+  """
+  waterHeight_avg: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`ph_min` of type `Float`
+  """
+  ph_min: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_min` of type `Float`
+  """
+  temperature_min: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`timestamp_min` of type `Timestamp`
+  """
+  timestamp_min: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_min` of type `Float`
+  """
+  waterHeight_min: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`ph_max` of type `Float`
+  """
+  ph_max: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`temperature_max` of type `Float`
+  """
+  temperature_max: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`timestamp_max` of type `Timestamp`
+  """
+  timestamp_max: OrderDirection
+  """
+  ✨ Generated from Field `KolamReading`.`waterHeight_max` of type `Float`
+  """
+  waterHeight_max: OrderDirection
+}

@@ -1,0 +1,161 @@
+extend type Query {
+  """
+  ✨ Look up a single `Account` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  account(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Account_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Account_FirstRow
+  ): Account @fdc_generated(from: "Account", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Device` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  device(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Device_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Device_FirstRow
+  ): Device @fdc_generated(from: "Device", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `KolamReading` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  kolamReading(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: KolamReading_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: KolamReading_FirstRow
+  ): KolamReading @fdc_generated(from: "KolamReading", purpose: QUERY_SINGLE)
+  """
+  ✨ List `Account` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  accounts(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Account_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Account_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Account_Having
+  ): [Account!]! @fdc_generated(from: "Account", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Device` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  devices(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Device_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Device_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Device_Having
+  ): [Device!]! @fdc_generated(from: "Device", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `KolamReading` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  kolamReadings(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: KolamReading_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [KolamReading_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: KolamReading_Having
+  ): [KolamReading!]! @fdc_generated(from: "KolamReading", purpose: QUERY_MULTIPLE)
+}

@@ -1,0 +1,338 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `Account` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  account_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Account_Data!
+  ): Account_KeyOutput! @fdc_generated(from: "Account", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Device` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  device_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Device_Data!
+  ): Device_KeyOutput! @fdc_generated(from: "Device", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `KolamReading` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  kolamReading_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: KolamReading_Data!
+  ): KolamReading_KeyOutput! @fdc_generated(from: "KolamReading", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Account` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  account_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Account_Data!]!
+  ): [Account_KeyOutput!]! @fdc_generated(from: "Account", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Device` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  device_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Device_Data!]!
+  ): [Device_KeyOutput!]! @fdc_generated(from: "Device", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `KolamReading` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  kolamReading_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [KolamReading_Data!]!
+  ): [KolamReading_KeyOutput!]! @fdc_generated(from: "KolamReading", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `Account` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Account`.
+  """
+  account_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Account_Data!
+  ): Account_KeyOutput! @fdc_generated(from: "Account", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Device` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Device`.
+  """
+  device_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Device_Data!
+  ): Device_KeyOutput! @fdc_generated(from: "Device", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `KolamReading` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `KolamReading`.
+  """
+  kolamReading_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: KolamReading_Data!
+  ): KolamReading_KeyOutput! @fdc_generated(from: "KolamReading", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `Account` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Account`.
+  """
+  account_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Account_Data!]!
+  ): [Account_KeyOutput!]! @fdc_generated(from: "Account", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Device` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Device`.
+  """
+  device_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Device_Data!]!
+  ): [Device_KeyOutput!]! @fdc_generated(from: "Device", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `KolamReading` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `KolamReading`.
+  """
+  kolamReading_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [KolamReading_Data!]!
+  ): [KolamReading_KeyOutput!]! @fdc_generated(from: "KolamReading", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Account` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Account` or `null` if not found.
+  """
+  account_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Account_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Account_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Account_Data!
+  ): Account_KeyOutput @fdc_generated(from: "Account", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Device` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Device` or `null` if not found.
+  """
+  device_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Device_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Device_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Device_Data!
+  ): Device_KeyOutput @fdc_generated(from: "Device", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `KolamReading` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `KolamReading` or `null` if not found.
+  """
+  kolamReading_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: KolamReading_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: KolamReading_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: KolamReading_Data!
+  ): KolamReading_KeyOutput @fdc_generated(from: "KolamReading", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `Account` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  account_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Account_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Account_Data!
+  ): Int! @fdc_generated(from: "Account", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Device` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  device_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Device_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Device_Data!
+  ): Int! @fdc_generated(from: "Device", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `KolamReading` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  kolamReading_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: KolamReading_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: KolamReading_Data!
+  ): Int! @fdc_generated(from: "KolamReading", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `Account` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  account_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Account_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Account_FirstRow
+  ): Account_KeyOutput @fdc_generated(from: "Account", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Device` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  device_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Device_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Device_FirstRow
+  ): Device_KeyOutput @fdc_generated(from: "Device", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `KolamReading` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  kolamReading_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: KolamReading_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: KolamReading_FirstRow
+  ): KolamReading_KeyOutput @fdc_generated(from: "KolamReading", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Account` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  account_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Account_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Account", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Device` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  device_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Device_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Device", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `KolamReading` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  kolamReading_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: KolamReading_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "KolamReading", purpose: DELETE_MULTIPLE)
+}

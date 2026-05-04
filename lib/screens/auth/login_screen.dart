@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import '../dashboard/dashboard_awal.dart'; // ✅ Diperbaiki: mengarah ke DashboardAwal
+
+// Import sesuai struktur folder proyek Anda
+import '../dashboard/dashboard_awal.dart'; 
+import '../../generated/simogura_connector.dart';
 
 // ─────────────────────────────────────────────────────────────
 //  WARNA
@@ -39,38 +42,70 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  // ── Hash password pakai SHA-256 ──────────────────────────
-  String _hashPassword(String password) {
-    final bytes  = utf8.encode(password);
-    final digest = sha256.convert(bytes);
-    return digest.toString();
-  }
-
   void _onLogin() async {
-    if (_usernameCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Username dan password tidak boleh kosong')),
-      );
+    final username = _usernameCtrl.text.trim();
+    final password = _passwordCtrl.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      _showSnackBar('Username dan password tidak boleh kosong');
       return;
     }
 
     setState(() => _isLoading = true);
 
-    // Hash password sebelum dikirim ke API
-    final hashedPassword = _hashPassword(_passwordCtrl.text);
+    try {
+      // 1. Hashing password dengan SHA-256
+      final bytes = utf8.encode(password);
+      final hash = sha256.convert(bytes).toString();
 
-    // TODO: ganti Future.delayed di bawah dengan API call yang sesungguhnya
-    // Contoh: await ApiService.login(_usernameCtrl.text, hashedPassword);
-    await Future.delayed(const Duration(seconds: 1));
+      // 2. Eksekusi query via Data Connect Connector
+      final connector = SimoguraConnectorConnector.instance;
+      final response = await connector.getAccountByUsername(username: username).execute();
+      
+      if (response.data.accounts.isEmpty) {
+        throw 'Username tidak ditemukan.';
+      }
+      
+      final account = response.data.accounts.first;
+      
+      // 3. Validasi Hash Password
+      if (account.passwordHash != hash) {
+        throw 'Password salah.';
+      }
 
-    setState(() => _isLoading = false);
+      // 4. Navigasi ke Dashboard (Langsung tanpa Update Timestamp)
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const DashboardAwal()),
+      );
 
-    if (!mounted) return;
+    } catch (e) {
+      if (!mounted) return;
 
-    // ✅ Diperbaiki: navigasi ke DashboardAwal, bukan DashboardScreen
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const DashboardAwal()),
+      // Debugging: Mencetak error asli ke console agar Anda tahu penyebab pastinya
+      debugPrint("LOGIN_ERROR: $e");
+
+      String errorMsg = e.toString().replaceAll('Exception: ', '');
+      
+      // Jika error mengandung kata Firebase/DataConnect, berarti masalah jaringan/config
+      if (errorMsg.toLowerCase().contains('dataconnect') || 
+          errorMsg.toLowerCase().contains('firebase') ||
+          errorMsg.toLowerCase().contains('xmlhttprequest')) {
+        errorMsg = "Gagal terhubung ke database. Pastikan Emulator/Internet aktif.";
+      }
+      
+      _showSnackBar(errorMsg);
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
@@ -81,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ── AREA ATAS: logo ───────────────────────────
+            // AREA ATAS: Logo
             Expanded(
               flex: 38,
               child: Center(
@@ -93,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
-            // ── CARD PUTIH ────────────────────────────────
+            // CARD PUTIH: Form Login
             Expanded(
               flex: 62,
               child: Container(
@@ -108,184 +143,139 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // header: tombol back + judul
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // tombol back — kembali ke onboarding
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () => Navigator.pop(context),
-                              child: Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: _C.line),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Icon(
-                                  Icons.chevron_left,
-                                  color: _C.text,
-                                  size: 22,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                const Text(
-                                  'Selamat Datang\ndi Simogura',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: _C.text,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.3,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  'Pantau kondisi kolam Anda secara real-time',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: _C.grey,
-                                    fontSize: 12,
-                                    height: 1.4,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 48),
-                        ],
-                      ),
+                      _buildHeader(),
                       const SizedBox(height: 32),
-
-                      // field username
                       _buildUnderlineField(
                         controller: _usernameCtrl,
                         hint: 'Username',
-                        suffixIcon: const Icon(
-                          Icons.person_outline,
-                          color: _C.grey,
-                          size: 20,
-                        ),
+                        suffixIcon: const Icon(Icons.person_outline, color: _C.grey, size: 20),
                       ),
                       const SizedBox(height: 20),
-
-                      // field password
                       _buildUnderlineField(
                         controller: _passwordCtrl,
                         hint: 'Password',
                         obscure: _obscurePass,
                         suffixIcon: GestureDetector(
-                          onTap: () =>
-                              setState(() => _obscurePass = !_obscurePass),
+                          onTap: () => setState(() => _obscurePass = !_obscurePass),
                           child: Icon(
-                            _obscurePass
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            color: _C.grey,
-                            size: 20,
+                            _obscurePass ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                            color: _C.grey, size: 20,
                           ),
                         ),
                       ),
                       const SizedBox(height: 16),
-
-                      // remember me
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: Checkbox(
-                              value: _rememberMe,
-                              onChanged: (v) =>
-                                  setState(() => _rememberMe = v ?? false),
-                              activeColor: _C.navy,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4)),
-                              side: const BorderSide(color: _C.navy),
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Remember me',
-                            style: TextStyle(color: _C.text, fontSize: 13),
-                          ),
-                        ],
-                      ),
+                      _buildRememberMe(),
                       const SizedBox(height: 28),
-
-                      // tombol login
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: _isLoading ? null : _onLogin,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _C.navy,
-                            foregroundColor: _C.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: _isLoading
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                        ),
-                      ),
+                      _buildLoginButton(),
                       const SizedBox(height: 24),
-
-                      // teks kebijakan
-                      Center(
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: const TextSpan(
-                            style: TextStyle(
-                                color: _C.grey, fontSize: 11, height: 1.5),
-                            children: [
-                              TextSpan(
-                                  text: 'Dengan masuk, Anda menyetujui '),
-                              TextSpan(
-                                text: 'Kebijakan Privasi & Syarat Penggunaan',
-                                style: TextStyle(
-                                  color: _C.navy,
-                                  fontWeight: FontWeight.w600,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: _C.navy,
-                                ),
-                              ),
-                              TextSpan(text: '.'),
-                            ],
-                          ),
-                        ),
-                      ),
+                      _buildFooterText(),
                     ],
                   ),
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Container(
+            width: 36, height: 36,
+            decoration: BoxDecoration(
+              border: Border.all(color: _C.line),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.chevron_left, color: _C.text, size: 22),
+          ),
+        ),
+        const SizedBox(width: 12),
+        const Expanded(
+          child: Column(
+            children: [
+              Text(
+                'Selamat Datang\ndi Simogura',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _C.text, fontSize: 20, fontWeight: FontWeight.bold, height: 1.3,
+                ),
+              ),
+              SizedBox(height: 6),
+              Text(
+                'Pantau kondisi kolam Anda secara real-time',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: _C.grey, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 48),
+      ],
+    );
+  }
+
+  Widget _buildRememberMe() {
+    return Row(
+      children: [
+        SizedBox(
+          width: 20, height: 20,
+          child: Checkbox(
+            value: _rememberMe,
+            onChanged: (v) => setState(() => _rememberMe = v ?? false),
+            activeColor: _C.navy,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            side: const BorderSide(color: _C.navy),
+          ),
+        ),
+        const SizedBox(width: 8),
+        const Text('Remember me', style: TextStyle(color: _C.text, fontSize: 13)),
+      ],
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _onLogin,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _C.navy,
+          foregroundColor: _C.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          elevation: 0,
+        ),
+        child: _isLoading
+            ? const SizedBox(
+                width: 20, height: 20,
+                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+              )
+            : const Text('Login', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+      ),
+    );
+  }
+
+  Widget _buildFooterText() {
+    return Center(
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: const TextSpan(
+          style: TextStyle(color: _C.grey, fontSize: 11, height: 1.5),
+          children: [
+            TextSpan(text: 'Dengan masuk, Anda menyetujui '),
+            TextSpan(
+              text: 'Kebijakan Privasi & Syarat Penggunaan',
+              style: TextStyle(
+                color: _C.navy, fontWeight: FontWeight.w600, decoration: TextDecoration.underline,
+              ),
+            ),
+            TextSpan(text: '.'),
           ],
         ),
       ),
@@ -312,9 +302,7 @@ class _LoginScreenState extends State<LoginScreen> {
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(color: _C.navy, width: 1.5),
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-        filled: false,
+        contentPadding: const EdgeInsets.symmetric(vertical: 10),
       ),
     );
   }
