@@ -1,0 +1,12 @@
+query GetAccountByUsername($username: String!) @auth(level: PUBLIC) {
+  accounts(where: {username: {eq: $username}}) {
+    id
+    username
+    passwordHash
+    role
+  }
+}
+
+mutation UpdateLastLogin($id: UUID!, $lastLoginAt: Timestamp!) @auth(level: PUBLIC) {
+  account_update(id: $id, data: {lastLoginAt: $lastLoginAt})
+}

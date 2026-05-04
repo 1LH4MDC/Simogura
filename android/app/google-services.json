@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "3586048145",
+    "project_id": "ppl-simogura",
+    "storage_bucket": "ppl-simogura.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3586048145:android:f330af196c6aa067fc3f30",
+        "android_client_info": {
+          "package_name": "com.example.simogura"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXFB-FVWA_THTH5hIxFvS9BmF5lRdjH0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

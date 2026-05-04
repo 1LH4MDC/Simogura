@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:device_frame/device_frame.dart';
+import 'package:firebase_core/firebase_core.dart';
+// import 'firebase_options.dart'; // TODO: Run 'flutterfire configure' to generate this file
+
 import 'package:simogura/screens/auth/login_screen.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/dashboard/dashboard_awal.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // // Initialize Firebase (Uncomment after running 'flutterfire configure')
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+
   // Paksa orientasi portrait (hanya berlaku di mobile)
   if (!kIsWeb) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

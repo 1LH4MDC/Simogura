@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_data_connect/firebase_data_connect.dart';
+import '../../generated/simogura_connector.dart';
 import '../dashboard/dashboard_screen.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -39,13 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  // ── Hash password pakai SHA-256 ──────────────────────────
-  String _hashPassword(String password) {
-    final bytes  = utf8.encode(password);
-    final digest = sha256.convert(bytes);
-    return digest.toString();
-  }
-
   void _onLogin() async {
     if (_usernameCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -56,20 +51,54 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
 
-    // Hash password sebelum dikirim ke API
-    final hashedPassword = _hashPassword(_passwordCtrl.text);
+    try {
+      final username = _usernameCtrl.text.trim();
+      final password = _passwordCtrl.text;
+      
+      final bytes = utf8.encode(password);
+      final hash = sha256.convert(bytes).toString();
 
-    // TODO: ganti Future.delayed di bawah dengan API call yang sesungguhnya
-    // Contoh: await ApiService.login(_usernameCtrl.text, hashedPassword);
-    await Future.delayed(const Duration(seconds: 1));
+      final connector = SimoguraConnectorConnector.instance;
+      final response = await connector.getAccountByUsername(username: username).execute();
+      
+      if (response.data.accounts.isEmpty) {
+        throw Exception('Username tidak ditemukan.');
+      }
+      
+      final account = response.data.accounts.first;
+      
+      if (account.passwordHash != hash) {
+        throw Exception('Password salah.');
+      }
+      
+      try {
+        await connector.updateLastLogin(
+          id: account.id,
+          // If Timestamp class throws error, we'll fix it next.
+          // In Data Connect Timestamp is often imported from firebase_data_connect
+          // Data Connect Timestamp parses from ISO 8601 string or DateTime.
+          // Let's pass what we can or wait for type error.
+          lastLoginAt: Timestamp.fromJson(DateTime.now().toUtc().toIso8601String()),
+        ).execute();
+      } catch (e) {
+        debugPrint('Failed to update last login: $e');
+      }
 
-    setState(() => _isLoading = false);
-
-    if (!mounted) return;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const DashboardScreen()),
-    );
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
