@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import '../dashboard/dashboard_screen.dart';
 
@@ -37,6 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  // ── Hash password pakai SHA-256 ──────────────────────────
+  String _hashPassword(String password) {
+    final bytes  = utf8.encode(password);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
   void _onLogin() async {
     if (_usernameCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,7 +55,14 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(seconds: 1)); // ganti dengan API call
+
+    // Hash password sebelum dikirim ke API
+    final hashedPassword = _hashPassword(_passwordCtrl.text);
+
+    // TODO: ganti Future.delayed di bawah dengan API call yang sesungguhnya
+    // Contoh: await ApiService.login(_usernameCtrl.text, hashedPassword);
+    await Future.delayed(const Duration(seconds: 1));
+
     setState(() => _isLoading = false);
 
     if (!mounted) return;
@@ -94,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // ✅ tombol back — kembali ke onboarding
+                          // tombol back — kembali ke onboarding
                           MouseRegion(
                             cursor: SystemMouseCursors.click,
                             child: GestureDetector(
@@ -250,8 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextSpan(
                                   text: 'Dengan masuk, Anda menyetujui '),
                               TextSpan(
-                                text:
-                                    'Kebijakan Privasi & Syarat Penggunaan',
+                                text: 'Kebijakan Privasi & Syarat Penggunaan',
                                 style: TextStyle(
                                   color: _C.navy,
                                   fontWeight: FontWeight.w600,

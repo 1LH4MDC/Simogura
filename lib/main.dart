@@ -5,6 +5,7 @@ import 'package:device_frame/device_frame.dart';
 import 'package:simogura/screens/auth/login_screen.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/onboarding/onboarding_screen.dart';
+import 'screens/dashboard/dashboard_awal.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,7 @@ class SimoguraApp extends StatelessWidget {
       routes: {
         '/onboarding': (context) => const OnboardingScreen(),
         '/login': (context) => const LoginScreen(),
+        '/dashboard-awal': (context) => const DashboardAwal(),
         // '/login' tambahkan nanti
       },
     );
