@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import '../dashboard/dashboard_screen.dart';
+import '../dashboard/dashboard_awal.dart'; // ✅ Diperbaiki: mengarah ke DashboardAwal
 
 // ─────────────────────────────────────────────────────────────
 //  WARNA
@@ -66,9 +66,11 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
 
     if (!mounted) return;
+
+    // ✅ Diperbaiki: navigasi ke DashboardAwal, bukan DashboardScreen
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const DashboardScreen()),
+      MaterialPageRoute(builder: (_) => const DashboardAwal()),
     );
   }
 
