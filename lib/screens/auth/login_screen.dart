@@ -95,19 +95,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // ✅ tombol back — kembali ke onboarding
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: _C.line),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(
-                                Icons.chevron_left,
-                                color: _C.text,
-                                size: 22,
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: _C.line),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(
+                                  Icons.chevron_left,
+                                  color: _C.text,
+                                  size: 22,
+                                ),
                               ),
                             ),
                           ),

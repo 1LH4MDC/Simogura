@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../profile/profile_screen.dart';
 
 // ─────────────────────────────────────────────────────────────
 //  WARNA
@@ -508,12 +509,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildProfilPage() {
-    return const Center(
-      child: Text('Halaman Profil',
-          style: TextStyle(color: _C.text, fontSize: 16)),
-    );
-  }
+Widget _buildProfilPage() {
+  return const ProfileScreen();
+}
 
   // ── BOTTOM NAVIGATION ──────────────────────────────────────
   Widget _buildBottomNav() {

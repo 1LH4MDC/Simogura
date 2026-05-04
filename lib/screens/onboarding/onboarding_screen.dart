@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simogura/screens/auth/login_screen.dart';
 
-
-
 // ── Uncomment saat login screen sudah siap ──
 // import '../auth/login_screen.dart';
 
@@ -10,9 +8,9 @@ import 'package:simogura/screens/auth/login_screen.dart';
 //  WARNA
 // ─────────────────────────────────────────────────────────────
 class _C {
-  static const navy   = Color(0xFF0C344D);
-  static const blue   = Color(0xFF2FA8D5);
-  static const white  = Color(0xFFFFFFFF);
+  static const navy = Color(0xFF0C344D);
+  static const blue = Color(0xFF2FA8D5);
+  static const white = Color(0xFFFFFFFF);
   static const dotOff = Color(0xFF3A6A8A);
 }
 
@@ -44,8 +42,7 @@ const _pages = [
     title: 'Manajemen Siklus',
     description:
         'Atur dan pantau setiap siklus pemeliharaan ikan dengan mudah. Anda dapat mengelola aktivitas'
-        'harian kolam dengan lebih efisien dan memastikan produktivitas tetap optimal.'
-        ,
+        'harian kolam dengan lebih efisien dan memastikan produktivitas tetap optimal.',
   ),
   _PageData(
     imagePath: 'assets/images/on_boarding3.png',
@@ -77,7 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _goToLogin() {
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const LoginScreen()),
     );
@@ -114,13 +111,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
             // ── CARD BAWAH: ada margin kiri-kanan ─────────
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 20), // ✅ margin kiri-kanan
+              padding: const EdgeInsets.fromLTRB(
+                16,
+                0,
+                16,
+                20,
+              ), // ✅ margin kiri-kanan
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
                 decoration: BoxDecoration(
                   color: _C.navy,
-                  borderRadius: BorderRadius.circular(28), // ✅ semua sudut rounded
+                  borderRadius: BorderRadius.circular(
+                    28,
+                  ), // ✅ semua sudut rounded
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -193,9 +197,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton(
-                        
                         onPressed: _goToLogin,
-                        
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _C.white,
                           foregroundColor: _C.navy,
@@ -203,7 +206,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             borderRadius: BorderRadius.circular(14),
                           ),
                           elevation: 0,
-                          
                         ),
                         child: const Text(
                           'Login',
