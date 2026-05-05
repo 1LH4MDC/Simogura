@@ -1,7 +1,8 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-
-// ── Uncomment saat onboarding/login siap ──
-// import '../onboarding/onboarding_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../auth/login_screen.dart';
 
 // ─────────────────────────────────────────────────────────────
 //  WARNA
@@ -20,16 +21,6 @@ class _C {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  MODEL DATA PROFIL (dummy — ganti dengan data dari API)
-// ─────────────────────────────────────────────────────────────
-class _ProfileData {
-  static String nama   = 'Ilham Dwi Cahya';
-  static String email  = 'ilham@simogura.id';
-  static String role   = 'Admin (Pengelola BUMDes)';
-  static String avatar = 'IL';
-}
-
-// ─────────────────────────────────────────────────────────────
 //  PROFILE SCREEN
 // ─────────────────────────────────────────────────────────────
 class ProfileScreen extends StatefulWidget {
@@ -41,9 +32,10 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isEditing = false;
+  bool _isLoading = true;
+  Map<String, dynamic>? _userData;
 
-  late TextEditingController _namaCtrl;
-  late TextEditingController _emailCtrl;
+  late TextEditingController _usernameCtrl;
   late TextEditingController _passwordCtrl;
   late TextEditingController _konfirmasiCtrl;
   bool _obscurePass    = true;
@@ -52,37 +44,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _namaCtrl       = TextEditingController(text: _ProfileData.nama);
-    _emailCtrl      = TextEditingController(text: _ProfileData.email);
+    _usernameCtrl   = TextEditingController();
     _passwordCtrl   = TextEditingController();
     _konfirmasiCtrl = TextEditingController();
+    _fetchProfile();
+  }
+
+  Future<void> _fetchProfile() async {
+    setState(() => _isLoading = true);
+    try {
+      final response = await Supabase.instance.client
+          .from('akun')
+          .select()
+          .limit(1)
+          .maybeSingle();
+
+      if (response != null) {
+        setState(() {
+          _userData = response;
+          _usernameCtrl.text = response['username'] ?? '';
+        });
+      }
+    } catch (e) {
+      debugPrint("FETCH_PROFILE_ERROR: $e");
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
   void dispose() {
-    _namaCtrl.dispose();
-    _emailCtrl.dispose();
+    _usernameCtrl.dispose();
     _passwordCtrl.dispose();
     _konfirmasiCtrl.dispose();
     super.dispose();
   }
 
   // ── Validasi & Simpan ──────────────────────────────────────
-  void _simpanPerubahan() {
-    final nama    = _namaCtrl.text.trim();
-    final email   = _emailCtrl.text.trim();
+  void _simpanPerubahan() async {
+    final username = _usernameCtrl.text.trim();
     final pass    = _passwordCtrl.text;
     final konfirm = _konfirmasiCtrl.text;
 
-    if (nama.isEmpty || email.isEmpty) {
-      _showAlert('Data tidak boleh kosong');
+    if (username.isEmpty) {
+      _showAlert('Username tidak boleh kosong');
       return;
     }
-    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-    if (!emailRegex.hasMatch(email)) {
-      _showAlert('Format email tidak valid');
-      return;
-    }
+
     if (pass.isNotEmpty) {
       if (pass.length < 6) {
         _showAlert('Password minimal 6 karakter');
@@ -94,21 +102,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
 
-    setState(() {
-      _ProfileData.nama   = nama;
-      _ProfileData.email  = email;
-      _ProfileData.avatar = nama.isNotEmpty ? nama[0].toUpperCase() : 'U';
-      _isEditing = false;
-    });
-    _passwordCtrl.clear();
-    _konfirmasiCtrl.clear();
-    _showSuccessDialog('Profil berhasil diperbarui');
+    setState(() => _isLoading = true);
+
+    try {
+      final updates = {
+        'username': username,
+      };
+
+      if (pass.isNotEmpty) {
+        final bytes = utf8.encode(pass);
+        final hash = sha256.convert(bytes).toString();
+        updates['password'] = hash;
+      }
+
+      await Supabase.instance.client
+          .from('akun')
+          .update(updates)
+          .eq('id', _userData!['id']);
+
+      setState(() {
+        _userData!['username'] = username;
+        _isEditing = false;
+      });
+      _passwordCtrl.clear();
+      _konfirmasiCtrl.clear();
+      _showSuccessDialog('Profil berhasil diperbarui');
+    } catch (e) {
+      _showAlert('Gagal memperbarui profil: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   void _batalEdit() {
     setState(() {
-      _namaCtrl.text  = _ProfileData.nama;
-      _emailCtrl.text = _ProfileData.email;
+      _usernameCtrl.text = _userData?['username'] ?? '';
       _passwordCtrl.clear();
       _konfirmasiCtrl.clear();
       _isEditing = false;
@@ -171,14 +199,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(
             width: 110,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // tutup dialog
-                // Navigasi ke onboarding/login:
-                // Navigator.pushAndRemoveUntil(
-                //   context,
-                //   MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-                //   (route) => false,
-                // );
+              onPressed: () async {
+                if (!mounted) return;
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: _C.logout,
@@ -254,16 +281,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ──────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
+    if (_isLoading && _userData == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    final String username = _userData?['username'] ?? '-';
+    final String role = _userData?['role'] ?? 'Karyawan';
+    final String avatar = username.isNotEmpty ? username[0].toUpperCase() : 'U';
+
     return Scaffold(
       backgroundColor: _C.bg,
       appBar: AppBar(
         backgroundColor: _C.navy,
         foregroundColor: _C.white,
         elevation: 0,
-        automaticallyImplyLeading: false, // ✅ hapus tombol kembali
+        automaticallyImplyLeading: false, 
         title: Text(
           _isEditing ? 'Edit Profil' : 'Profil',
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -308,7 +342,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: Center(
                       child: Text(
-                        _ProfileData.avatar,
+                        avatar,
                         style: const TextStyle(
                           color: _C.white,
                           fontSize: 32,
@@ -343,7 +377,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             if (!_isEditing) ...[
               Text(
-                _ProfileData.nama,
+                username,
                 style: const TextStyle(
                   color: _C.text,
                   fontSize: 18,
@@ -359,7 +393,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  _ProfileData.role,
+                  role,
                   style: const TextStyle(
                     color: _C.blue,
                     fontSize: 12,
@@ -385,7 +419,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
-              child: _isEditing ? _buildEditForm() : _buildInfoView(),
+              child: _isEditing ? _buildEditForm() : _buildInfoView(username, role),
             ),
             const SizedBox(height: 16),
 
@@ -394,9 +428,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton.icon(
-                onPressed: _isEditing
-                    ? _simpanPerubahan
-                    : () => setState(() => _isEditing = true),
+                onPressed: _isLoading 
+                    ? null 
+                    : (_isEditing ? _simpanPerubahan : () => setState(() => _isEditing = true)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _isEditing ? Colors.green : _C.navy,
                   foregroundColor: _C.white,
@@ -404,10 +438,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(14)),
                   elevation: 0,
                 ),
-                icon: Icon(
-                  _isEditing ? Icons.save_outlined : Icons.edit_outlined,
-                  size: 18,
-                ),
+                icon: _isLoading 
+                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  : Icon(_isEditing ? Icons.save_outlined : Icons.edit_outlined, size: 18),
                 label: Text(
                   _isEditing ? 'Simpan Perubahan' : 'Edit Profil',
                   style: const TextStyle(
@@ -425,7 +458,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _showLogoutDialog,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _C.logout, // ✅ #B92025
+                    backgroundColor: _C.logout,
                     foregroundColor: _C.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14)),
@@ -447,17 +480,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   // ── MODE LIHAT ─────────────────────────────────────────────
-  Widget _buildInfoView() {
+  Widget _buildInfoView(String username, String role) {
     return Column(
       children: [
         const _SectionTitle('Informasi Akun'),
         const SizedBox(height: 12),
-        // ✅ Hanya Nama, Email, Role (tanpa ID & Login Terakhir)
-        _buildInfoRow(Icons.person_outline,           'Nama',  _ProfileData.nama),
+        _buildInfoRow(Icons.person_outline,           'Username',  username),
         _buildDivider(),
-        _buildInfoRow(Icons.email_outlined,           'Email', _ProfileData.email),
-        _buildDivider(),
-        _buildInfoRow(Icons.manage_accounts_outlined, 'Role',  _ProfileData.role),
+        _buildInfoRow(Icons.manage_accounts_outlined, 'Role',  role),
       ],
     );
   }
@@ -508,22 +538,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         const _SectionTitle('Ubah Data Profil'),
         const SizedBox(height: 16),
 
-        _buildFieldLabel('Nama Lengkap'),
+        _buildFieldLabel('Username'),
         const SizedBox(height: 6),
         _buildTextField(
-          controller: _namaCtrl,
-          hint: 'Masukkan nama lengkap',
+          controller: _usernameCtrl,
+          hint: 'Masukkan username',
           icon: Icons.person_outline,
-        ),
-        const SizedBox(height: 16),
-
-        _buildFieldLabel('Email'),
-        const SizedBox(height: 6),
-        _buildTextField(
-          controller: _emailCtrl,
-          hint: 'Masukkan email',
-          icon: Icons.email_outlined,
-          keyboardType: TextInputType.emailAddress,
         ),
         const SizedBox(height: 20),
 

@@ -1,5 +1,0 @@
-connectorId: "simogura_connector"
-generate:
-  dartSdk:
-    outputDir: "../../lib/generated"
-    package: "simogura"

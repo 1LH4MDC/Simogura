@@ -263,7 +263,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           // ── Card Suhu (full width) ─────────────────────
           _buildSensorCardFull(
             label: 'Suhu',
-            value: '${_SensorData.suhu.toStringAsFixed(0)}',
+            value: _SensorData.suhu.toStringAsFixed(0),
             unit: '°C',
             statusText: 'Suhu ideal kandang',
             icon: Icons.thermostat_outlined,
@@ -278,7 +278,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Expanded(
                 child: _buildSensorCardHalf(
                   label: 'Kelembaban',
-                  value: '${_SensorData.kelembaban.toStringAsFixed(0)}',
+                  value: _SensorData.kelembaban.toStringAsFixed(0),
                   unit: '%',
                   statusText: 'Suhu ideal kandang',
                   icon: Icons.water_drop_outlined,
@@ -290,7 +290,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Expanded(
                 child: _buildSensorCardHalf(
                   label: 'Kadar Amonia',
-                  value: '${_SensorData.kadarAmonia.toStringAsFixed(0)}',
+                  value: _SensorData.kadarAmonia.toStringAsFixed(0),
                   unit: 'ppm',
                   statusText: 'Kadar Amonia Normal',
                   icon: Icons.science_outlined,
@@ -308,7 +308,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Expanded(
                 child: _buildSensorCardHalf(
                   label: 'Pakan',
-                  value: '${_SensorData.pakan.toStringAsFixed(0)}',
+                  value: _SensorData.pakan.toStringAsFixed(0),
                   unit: 'kg',
                   statusText: 'Total pakan 2 hari',
                   icon: Icons.set_meal_outlined,
@@ -320,7 +320,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Expanded(
                 child: _buildSensorCardHalf(
                   label: 'Volume Air',
-                  value: '${_SensorData.volumeAir.toStringAsFixed(0)}',
+                  value: _SensorData.volumeAir.toStringAsFixed(0),
                   unit: '%',
                   statusText: 'Volume air tercukupi',
                   icon: Icons.water_outlined,

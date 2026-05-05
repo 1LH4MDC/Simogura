@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Import sesuai struktur folder proyek Anda
 import '../dashboard/dashboard_awal.dart'; 
-import '../../generated/simogura_connector.dart';
 
 // ─────────────────────────────────────────────────────────────
 //  WARNA
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onLogin() async {
-    final username = _usernameCtrl.text.trim();
+    final username = _usernameCtrl.text;
     final password = _passwordCtrl.text;
 
     if (username.isEmpty || password.isEmpty) {
@@ -58,22 +58,30 @@ class _LoginScreenState extends State<LoginScreen> {
       final bytes = utf8.encode(password);
       final hash = sha256.convert(bytes).toString();
 
-      // 2. Eksekusi query via Data Connect Connector
-      final connector = SimoguraConnectorConnector.instance;
-      final response = await connector.getAccountByUsername(username: username).execute();
+      // 2. Query ke table 'akun' menggunakan Supabase Client
+      final response = await Supabase.instance.client
+          .from('akun')
+          .select()
+          .eq('username', username)
+          .maybeSingle();
       
-      if (response.data.accounts.isEmpty) {
+      if (response == null) {
         throw 'Username tidak ditemukan.';
       }
       
-      final account = response.data.accounts.first;
-      
       // 3. Validasi Hash Password
-      if (account.passwordHash != hash) {
+      // Berdasarkan schema, kolomnya adalah 'password'
+      if (response['password'] != hash) {
         throw 'Password salah.';
       }
 
-      // 4. Navigasi ke Dashboard (Langsung tanpa Update Timestamp)
+      // 4. Update lastlogin_at
+      await Supabase.instance.client
+          .from('akun')
+          .update({'lastlogin_at': DateTime.now().toIso8601String()})
+          .eq('id', response['id']);
+
+      // 5. Navigasi ke Dashboard
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
@@ -82,17 +90,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     } catch (e) {
       if (!mounted) return;
-
-      // Debugging: Mencetak error asli ke console agar Anda tahu penyebab pastinya
       debugPrint("LOGIN_ERROR: $e");
-
-      String errorMsg = e.toString().replaceAll('Exception: ', '');
       
-      // Jika error mengandung kata Firebase/DataConnect, berarti masalah jaringan/config
-      if (errorMsg.toLowerCase().contains('dataconnect') || 
-          errorMsg.toLowerCase().contains('firebase') ||
-          errorMsg.toLowerCase().contains('xmlhttprequest')) {
-        errorMsg = "Gagal terhubung ke database. Pastikan Emulator/Internet aktif.";
+      String errorMsg = e.toString();
+      if (errorMsg.contains('exception')) {
+        errorMsg = "Gagal terhubung ke database. Periksa koneksi Anda.";
       }
       
       _showSnackBar(errorMsg);

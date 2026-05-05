@@ -37,9 +37,7 @@ dependencies:
   # http: ^1.2.0               ← untuk API call ke backend
   # shared_preferences: ^2.2.0 ← untuk simpan data login
   cupertino_icons: ^1.0.8
-  firebase_core: ^4.7.0
-  firebase_data_connect: ^0.3.0
-  firebase_auth: ^6.4.0
+  supabase_flutter: ^2.12.4
 
 
 
