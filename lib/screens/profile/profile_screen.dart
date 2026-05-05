@@ -1,7 +1,6 @@
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../controllers/akun_controller.dart';
+import '../../models/akun_model.dart';
 import '../auth/login_screen.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -33,7 +32,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isEditing = false;
   bool _isLoading = true;
-  Map<String, dynamic>? _userData;
+  AkunModel? _user;
+  final _akunController = AkunController();
 
   late TextEditingController _usernameCtrl;
   late TextEditingController _passwordCtrl;
@@ -53,16 +53,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _fetchProfile() async {
     setState(() => _isLoading = true);
     try {
-      final response = await Supabase.instance.client
-          .from('akun')
-          .select()
-          .limit(1)
-          .maybeSingle();
-
-      if (response != null) {
+      // IDEALNYA: Ambil ID dari session/secure storage. 
+      // Untuk sementara ambil data pertama dari tabel akun.
+      final user = await _akunController.fetchProfile(1); // Ganti dengan ID real nanti
+      
+      if (user != null) {
         setState(() {
-          _userData = response;
-          _usernameCtrl.text = response['username'] ?? '';
+          _user = user;
+          _usernameCtrl.text = user.username ?? '';
         });
       }
     } catch (e) {
@@ -105,25 +103,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final updates = {
+      final updates = <String, dynamic>{
         'username': username,
       };
 
       if (pass.isNotEmpty) {
-        final bytes = utf8.encode(pass);
-        final hash = sha256.convert(bytes).toString();
-        updates['password'] = hash;
+        updates['password'] = pass;
       }
 
-      await Supabase.instance.client
-          .from('akun')
-          .update(updates)
-          .eq('id', _userData!['id']);
+      await _akunController.updateProfile(_user!.id!, updates);
 
-      setState(() {
-        _userData!['username'] = username;
-        _isEditing = false;
-      });
+      // Refresh local data
+      await _fetchProfile();
+      
+      setState(() => _isEditing = false);
       _passwordCtrl.clear();
       _konfirmasiCtrl.clear();
       _showSuccessDialog('Profil berhasil diperbarui');
@@ -136,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _batalEdit() {
     setState(() {
-      _usernameCtrl.text = _userData?['username'] ?? '';
+      _usernameCtrl.text = _user?.username ?? '';
       _passwordCtrl.clear();
       _konfirmasiCtrl.clear();
       _isEditing = false;
@@ -283,12 +276,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading && _userData == null) {
+    if (_isLoading && _user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final String username = _userData?['username'] ?? '-';
-    final String role = _userData?['role'] ?? 'Karyawan';
+    final String username = _user?.username ?? '-';
+    final String role = _user?.role ?? 'Karyawan';
     final String avatar = username.isNotEmpty ? username[0].toUpperCase() : 'U';
 
     return Scaffold(

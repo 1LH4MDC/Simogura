@@ -1,7 +1,5 @@
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../controllers/akun_controller.dart';
 
 // Import sesuai struktur folder proyek Anda
 import '../dashboard/dashboard_awal.dart'; 
@@ -31,6 +29,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _usernameCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  final _akunController = AkunController();
+  
   bool _rememberMe  = true;
   bool _obscurePass = true;
   bool _isLoading   = false;
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onLogin() async {
-    final username = _usernameCtrl.text;
+    final username = _usernameCtrl.text.trim();
     final password = _passwordCtrl.text;
 
     if (username.isEmpty || password.isEmpty) {
@@ -54,40 +54,16 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // 1. Hashing password dengan SHA-256
-      final bytes = utf8.encode(password);
-      final hash = sha256.convert(bytes).toString();
-
-      // 2. Query ke table 'akun' menggunakan Supabase Client
-      final response = await Supabase.instance.client
-          .from('akun')
-          .select()
-          .eq('username', username)
-          .maybeSingle();
+      final user = await _akunController.login(username, password);
       
-      if (response == null) {
-        throw 'Username tidak ditemukan.';
+      if (user != null) {
+        // Navigasi ke Dashboard
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const DashboardAwal()),
+        );
       }
-      
-      // 3. Validasi Hash Password
-      // Berdasarkan schema, kolomnya adalah 'password'
-      if (response['password'] != hash) {
-        throw 'Password salah.';
-      }
-
-      // 4. Update lastlogin_at
-      await Supabase.instance.client
-          .from('akun')
-          .update({'lastlogin_at': DateTime.now().toIso8601String()})
-          .eq('id', response['id']);
-
-      // 5. Navigasi ke Dashboard
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const DashboardAwal()),
-      );
-
     } catch (e) {
       if (!mounted) return;
       debugPrint("LOGIN_ERROR: $e");
