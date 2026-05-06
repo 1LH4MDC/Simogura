@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../controllers/kolam_controller.dart';
+import '../../models/akun_model.dart';
+import '../../models/kolam_model.dart';
 import '../dashboard/dashboard_screen.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -15,16 +18,50 @@ class _C {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  DASHBOARD AWAL — Empty State
+//  DASHBOARD AWAL — List or Empty State
 // ─────────────────────────────────────────────────────────────
-class DashboardAwal extends StatelessWidget {
-  const DashboardAwal({super.key});
+class DashboardAwal extends StatefulWidget {
+  final AkunModel user;
+  const DashboardAwal({super.key, required this.user});
 
-  void _goToTambahKolam(BuildContext context) {
-    Navigator.push(
+  @override
+  State<DashboardAwal> createState() => _DashboardAwalState();
+}
+
+class _DashboardAwalState extends State<DashboardAwal> {
+  final _kolamController = KolamController();
+  List<KolamModel> _kolams = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchKolams();
+  }
+
+  Future<void> _fetchKolams() async {
+    setState(() => _isLoading = true);
+    try {
+      final data = await _kolamController.getKolams(widget.user.id!);
+      setState(() => _kolams = data);
+    } catch (e) {
+      debugPrint("FETCH_KOLAM_ERROR: $e");
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _goToTambahKolam(BuildContext context) async {
+    final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const TambahKolamScreen()),
+      MaterialPageRoute(
+        builder: (_) => TambahKolamScreen(userId: widget.user.id!),
+      ),
     );
+
+    if (result == true) {
+      _fetchKolams();
+    }
   }
 
   @override
@@ -52,23 +89,22 @@ class DashboardAwal extends StatelessWidget {
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        'Hallo, ham',
-                        style: TextStyle(
+                        'Hallo, ${widget.user.username ?? "User"}',
+                        style: const TextStyle(
                           color: _C.text,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
+                      const Text(
                         'Pantau kolam anda',
                         style: TextStyle(color: _C.subtext, fontSize: 12),
                       ),
                     ],
                   ),
                   const Spacer(),
-                  // bell notifikasi
                   Container(
                     width: 42,
                     height: 42,
@@ -89,85 +125,149 @@ class DashboardAwal extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // ── Empty State Card ───────────────────────────
+              // ── Content ───────────────────────────
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
-                  decoration: BoxDecoration(
-                    color: _C.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Gambar kolam
-                      Image.asset(
-                        'assets/images/kolam.png',
-                        height: 160,
-                        fit: BoxFit.contain,
-                      ),
-                      const SizedBox(height: 28),
-
-                      const Text(
-                        'Belum memiliki kolam',
-                        style: TextStyle(
-                          color: _C.text,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Tambahkan kandang anda untuk dikelola di\naplikasi Simogura',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: _C.subtext,
-                          fontSize: 13,
-                          height: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 36),
-
-                      // Tombol tambah kolam
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () => _goToTambahKolam(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _C.navy,
-                            foregroundColor: _C.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: const Text(
-                            'Tambah Kolam',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              letterSpacing: 0.3,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _kolams.isEmpty
+                        ? _buildEmptyState(context)
+                        : _buildKolamList(),
               ),
             ],
           ),
         ),
       ),
+      floatingActionButton: _kolams.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () => _goToTambahKolam(context),
+              backgroundColor: _C.navy,
+              child: const Icon(Icons.add, color: _C.white),
+            )
+          : null,
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
+      decoration: BoxDecoration(
+        color: _C.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/kolam.png',
+            height: 160,
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(height: 28),
+          const Text(
+            'Belum memiliki kolam',
+            style: TextStyle(
+              color: _C.text,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Tambahkan kandang anda untuk dikelola di\naplikasi Simogura',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _C.subtext,
+              fontSize: 13,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 36),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              onPressed: () => _goToTambahKolam(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _C.navy,
+                foregroundColor: _C.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                elevation: 0,
+              ),
+              child: const Text(
+                'Tambah Kolam',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildKolamList() {
+    return ListView.builder(
+      itemCount: _kolams.length,
+      itemBuilder: (context, index) {
+        final kolam = _kolams[index];
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: _C.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            leading: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: _C.bg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.waves, color: _C.navy),
+            ),
+            title: Text(
+              kolam.lokasi ?? 'Kolam Tanpa Nama',
+              style: const TextStyle(
+                color: _C.text,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              'Terdaftar pada: ${kolam.createdAt?.day}/${kolam.createdAt?.month}/${kolam.createdAt?.year}',
+              style: const TextStyle(color: _C.subtext, fontSize: 12),
+            ),
+            trailing: const Icon(Icons.chevron_right, color: _C.subtext),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const DashboardScreen()),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -176,57 +276,43 @@ class DashboardAwal extends StatelessWidget {
 //  TAMBAH KOLAM SCREEN — Form
 // ─────────────────────────────────────────────────────────────
 class TambahKolamScreen extends StatefulWidget {
-  const TambahKolamScreen({super.key});
+  final int userId;
+  const TambahKolamScreen({super.key, required this.userId});
 
   @override
   State<TambahKolamScreen> createState() => _TambahKolamScreenState();
 }
 
 class _TambahKolamScreenState extends State<TambahKolamScreen> {
-  final _namaCtrl      = TextEditingController();
-  final _alamatCtrl    = TextEditingController();
-  final _kapasitasCtrl = TextEditingController();
+  final _lokasiCtrl    = TextEditingController();
+  final _kolamController = KolamController();
   bool _isSaving = false;
 
   @override
   void dispose() {
-    _namaCtrl.dispose();
-    _alamatCtrl.dispose();
-    _kapasitasCtrl.dispose();
+    _lokasiCtrl.dispose();
     super.dispose();
   }
 
   void _simpanKolam() async {
-    // Validasi
-    if (_namaCtrl.text.trim().isEmpty) {
-      _showSnack('Nama kolam tidak boleh kosong');
-      return;
-    }
-    if (_alamatCtrl.text.trim().isEmpty) {
-      _showSnack('Alamat kolam tidak boleh kosong');
-      return;
-    }
-    if (_kapasitasCtrl.text.trim().isEmpty) {
-      _showSnack('Total kapasitas tidak boleh kosong');
+    if (_lokasiCtrl.text.trim().isEmpty) {
+      _showSnack('Lokasi/Nama kolam tidak boleh kosong');
       return;
     }
 
     setState(() => _isSaving = true);
 
-    // TODO: ganti dengan API call untuk menyimpan kolam
-    // Contoh: await ApiService.tambahKolam(namaCtrl.text, ...);
-    await Future.delayed(const Duration(milliseconds: 800));
-
-    setState(() => _isSaving = false);
-
-    if (!mounted) return;
-
-    // Navigasi ke DashboardScreen, hapus semua halaman sebelumnya
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const DashboardScreen()),
-      (route) => false,
-    );
+    try {
+      await _kolamController.createKolam(_lokasiCtrl.text.trim(), widget.userId);
+      
+      if (!mounted) return;
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+      _showSnack('Gagal menyimpan kolam: $e');
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
   }
 
   void _showSnack(String msg) {
@@ -259,7 +345,6 @@ class _TambahKolamScreenState extends State<TambahKolamScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ── Form ────────────────────────────────────────
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
@@ -290,31 +375,11 @@ class _TambahKolamScreenState extends State<TambahKolamScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Nama Kolam
-                      _buildLabel('Nama kolam'),
+                      _buildLabel('Lokasi / Nama kolam'),
                       const SizedBox(height: 6),
                       _buildTextField(
-                        controller: _namaCtrl,
-                        hint: 'Tuliskan nama kandang',
-                      ),
-                      const SizedBox(height: 18),
-
-                      // Alamat Kolam
-                      _buildLabel('Alamat Kolam'),
-                      const SizedBox(height: 6),
-                      _buildTextField(
-                        controller: _alamatCtrl,
-                        hint: 'Tulis alamat',
-                      ),
-                      const SizedBox(height: 18),
-
-                      // Total Kapasitas
-                      _buildLabel('Total kapasitas kandang (ekor)'),
-                      const SizedBox(height: 6),
-                      _buildTextField(
-                        controller: _kapasitasCtrl,
-                        hint: '',
-                        keyboardType: TextInputType.number,
+                        controller: _lokasiCtrl,
+                        hint: 'Tuliskan nama atau lokasi kandang',
                       ),
                     ],
                   ),
@@ -322,7 +387,6 @@ class _TambahKolamScreenState extends State<TambahKolamScreen> {
               ),
             ),
 
-            // ── Tombol Simpan ────────────────────────────────
             Container(
               color: _C.white,
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),

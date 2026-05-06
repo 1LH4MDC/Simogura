@@ -36,7 +36,6 @@ class SimoguraApp extends StatelessWidget {
     final Map<String, WidgetBuilder> routes = {
       '/onboarding': (context) => const OnboardingScreen(),
       '/login': (context) => const LoginScreen(),
-      '/dashboard-awal': (context) => const DashboardAwal(),
       '/todos': (context) => const TodosHomePage(), // Test route for the todos table
     };
 

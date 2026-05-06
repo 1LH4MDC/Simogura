@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (!mounted) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const DashboardAwal()),
+          MaterialPageRoute(builder: (_) => DashboardAwal(user: user)),
         );
       }
     } catch (e) {

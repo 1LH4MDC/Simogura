@@ -20,7 +20,7 @@ class AkunController {
       final response = await _supabase
           .from('akun')
           .select()
-          .ilike('username', username)
+          .eq('username', username)
           .maybeSingle();
 
       if (response == null) {
